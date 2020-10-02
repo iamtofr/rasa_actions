@@ -1,8 +1,10 @@
 # Standard Ignores
 *.DS_Store
 *.vscode/
-*/venv
+/venv
 __pycache__/
+/.idea
+
 
 # Rasa Ignores
 assistant/.history/
