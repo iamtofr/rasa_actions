@@ -3,6 +3,7 @@ import logging
 import signal
 from typing import Dict, Text, Any
 from aiohttp import ClientSession, BasicAuth
+from actions.vault import Vault
 from actions.util import anonymous_profile, priorities, states
 
 logger = logging.getLogger(__name__)
