@@ -14,11 +14,16 @@ intents:
 - restart
 - affirm
 - deny
+- explain
 
 entities:
 - priority
 
 slots:
+  user_profile:
+    type: unfeaturized
+  user_name:
+    type: unfeaturized
   confirm:
     type: unfeaturized
   incident_title:
@@ -32,7 +37,7 @@ responses:
   utter_out_of_scope:
   - text: Sorry, I'm not sure how to respond to that. Type "help" for assistance.
   utter_greet:
-  - text: Hello! I'm your IT Helpdesk Assistant.
+  - text: Hello {user_name}! I'm your IT Helpdesk Assistant.
   utter_goodbye:
   - text: Goodbye!
   utter_iamabot:
@@ -66,7 +71,7 @@ responses:
   utter_ask_confirm:
   - text: "Should I open an incident with the following details?
           \n    Title: {incident_title}
-          \n    Description: {problem_description}          
+          \n    Description: {problem_description}
           \n    Priority: {priority}"
     buttons:
     - title: Yes
@@ -77,6 +82,15 @@ responses:
   - text: Alright, I have cancelled the incident.
   utter_ask_whatelse:
     - text: What else can I help you with?
+  utter_explain_priority:
+    - text: "Priority is being requested by IT help desk team to triage your incident. Type 'low', or 'medium', or 'high'"
+
+forms:
+- open_incident_form
+
+actions:
+- action_session_start
+- action_incident_status
 
 session_config:
   session_expiration_time: 0.0
