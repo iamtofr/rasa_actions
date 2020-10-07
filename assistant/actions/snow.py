@@ -2,7 +2,7 @@ import asyncio
 import logging
 import signal
 from typing import Dict, Text, Any
-from aiohttp import ClientSession, BasicAuth
+from aiohttp import ClientSession, BasicAuth, TCPConnector
 from actions.vault import Vault
 from actions.util import anonymous_profile, priorities, states
 
@@ -28,7 +28,6 @@ class SnowAPI:
         loop.add_signal_handler(signal.SIGTERM, task)
         self._loop = loop
 
-
     async def open_session(self) -> ClientSession:
         """Opens the client session if it hasn't been opened yet,
            and returns the client session.
@@ -45,7 +44,8 @@ class SnowAPI:
             "Content-Type": "application/json",
             "Accept": "application/json"
         }
-        self._session = ClientSession(header=json_headers, auth=self.auth)
+
+        self._session = ClientSession(connector=TCPConnector(verify_ssl=False), headers=json_headers, auth=self.auth)
         return self._session
 
     async def close_session(self):
@@ -61,10 +61,12 @@ class SnowAPI:
         """
         url = f"{self.base_api_url}/table/sys_user/{id}"
         session = await self.open_session()
+
         async with session.get(url) as resp:
             if resp.status != 200:
                 logger.error("unable to load user profile. Status: %d", resp.status)
                 return anonymous_profile
+
             resp_json = await resp.json()
             user = resp_json.get("result")
             user_profile = {
@@ -78,49 +80,51 @@ class SnowAPI:
         caller_id = user_profile.get("id")
         url = (
             f"{self.base_api_url}/table/incident?"
-            f"sysparam_query=caller_id={caller_id}"
-            f"&sysparam_display_value=true"
+            f"sysparm_query=caller_id={caller_id}"
+            f"&sysparm_display_value=true"
         )
         session = await self.open_session()
         async with session.get(url) as resp:
             if resp.status != 200:
                 return {"error": "Unable to get recent incidents"}
+
             resp_json = await resp.json()
             result = resp_json.get("result")
             if result:
                 return {"incidents": result}
             else:
                 email = user_profile.get("email")
-                return {"error": f"No incidents onm record for {email}"}
+                return {"error": f"No incidents on record for {email}"}
 
     async def create_incident(
-        self,
-        caller_id,
-        short_description,
-        description,
-        priority
+            self,
+            caller_id,
+            short_description,
+            description,
+            priority
     ) -> Dict[Text, Any]:
         url = f"{self.base_api_url}/table/incident"
-        data = {
-            "short_desscription": short_description,
+        data={
+            "short_description": short_description,
             "description": description,
             "urgency": priorities.get(priority),
             "opened_by": caller_id,
             "caller_id": caller_id,
-            "comments": "Rasa assistent opened this ticket"
+            "comments": "Rasa assistant opened this ticket"
         }
         session = await self.open_session()
         async with session.post(url, json=data) as resp:
             if resp.status != 201:
-                resp_json = resp.json()
+                resp_json = await resp.json()
                 logger.error(
-                    "Unable to create incident. Status %d; Error %s",
+                    "Unable to create incident. Status: %d; Error: %s",
                     resp.status,
                     resp_json
                 )
-                return {"error": "Unable to create incident"}
+                return { "error": "Unable to create incident"}
+
             resp_json = await resp.json()
-            return resp_json.get("result")
+            return resp_json.get("result", {})
 
     @staticmethod
     def priority_db() -> Dict[str, int]:

@@ -2,7 +2,8 @@
 # Used to debug and test the assistant via shell.
 anonymous_profile = {
     "id": "anonymous",
-    "name": "anonymous"
+    "name": "anonymous",
+    "email": "foo@bar.baz"
 }
 
 # Priority to urgency ID mappings.
