@@ -1,27 +1,28 @@
 ## out of scope path
 * out_of_scope
-  - utter_out_of_scope
+    - utter_out_of_scope
 
 ## help
 * help
-  - utter_help
+    - utter_help
 
 ## thank
 * thank
-  - utter_welcome
+    - utter_welcome
 
 ## happy path
 * greet
-  - utter_greet
-  - utter_help
+    - utter_api_status
+    - utter_greet
+    - utter_help
 
 ## say goodbye
 * goodbye
-  - utter_goodbye
+    - utter_goodbye
 
 ## bot challenge
 * bot_challenge
-  - utter_iamabot
+    - utter_iamabot
 
 
 ## incident form
@@ -32,6 +33,7 @@
 
 ## incident form interrupted
 * open_incident OR password_reset OR problem_email
+    - utter_api_status
     - open_incident_form
     - form{"name":"open_incident_form"}
 * help
@@ -41,6 +43,7 @@
 
 ## incident form interrupted
 * open_incident OR password_reset OR problem_email
+    - utter_api_status
     - open_incident_form
     - form{"name":"open_incident_form"}
 * out_of_scope
@@ -50,11 +53,13 @@
 
 ## incident status
 * incident_status
+    - utter_api_status
     - action_incident_status
     - utter_ask_whatelse
 
 ## open incident form switch to incident status
 * open_incident OR password_reset OR problem_email
+    - utter_api_status
     - open_incident_form
     - form{"name":"open_incident_form"}
 * incident_status
@@ -64,10 +69,11 @@
     
 ## explain priority
 * open_incident OR password_reset OR problem_email
-  - open_incident_form
-  - form {"name": "open_incident_form"}
-  - slot {"requested_slot": "priority"}
+    - utter_api_status
+    - open_incident_form
+    - form {"name": "open_incident_form"}
+    - slot {"requested_slot": "priority"}
 * explain 
-  - utter_explain_priority 
-  - open_incident_form
-  - form {"name": null}
+    - utter_explain_priority 
+    - open_incident_form
+    - form {"name": null}

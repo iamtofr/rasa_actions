@@ -65,7 +65,11 @@ class SnowAPI:
         async with session.get(url) as resp:
             if resp.status != 200:
                 logger.error("unable to load user profile. Status: %d", resp.status)
-                return anonymous_profile
+                profile = {
+                    "data": anonymous_profile,
+                    "status": resp.status
+                }
+                return profile
 
             resp_json = await resp.json()
             user = resp_json.get("result")
@@ -74,7 +78,11 @@ class SnowAPI:
                 "name": user.get("name"),
                 "email": user.get("email")
             }
-            return user_profile
+            profile = {
+                "data": user_profile,
+                "status": resp.status
+            }
+            return profile
 
     async def retrieve_incidents(self, user_profile) -> Dict[Text, Any]:
         caller_id = user_profile.get("id")

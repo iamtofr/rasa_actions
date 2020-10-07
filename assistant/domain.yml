@@ -1,5 +1,6 @@
 intents:
   - greet
+  - explain
   - goodbye
   - bot_challenge
   - password_reset
@@ -14,13 +15,14 @@ intents:
   - restart
   - affirm
   - deny
-  - explain
 
 entities:
   - priority
 
 slots:
   user_profile:
+    type: unfeaturized
+  api_status:
     type: unfeaturized
   user_name:
     type: unfeaturized
@@ -33,6 +35,8 @@ slots:
   priority:
     type: unfeaturized
   problem_description:
+    type: unfeaturized
+  requested_slot:
     type: unfeaturized
 
 responses:
@@ -59,6 +63,8 @@ responses:
           title: high
   utter_no_priority:
     - text: Sorry "{priority}" is not a valid priority. Please try again.
+  utter_api_status:
+    - text: ServiceNow is "{api_status}"!.
   utter_help:
     - text: "I can help you open a service request ticket, or check the status of your open incidents.
       \nYou can ask me things like:
@@ -84,8 +90,6 @@ responses:
     - text: Alright, I have cancelled the incident.
   utter_ask_whatelse:
     - text: What else can I help you with?
-  utter_explain_priority:
-    - text: "Priority is being requested by IT help desk team to triage your incident. Type 'low', or 'medium', or 'high'"
 
 forms:
   - open_incident_form
@@ -93,6 +97,7 @@ forms:
 actions:
   - action_session_start
   - action_incident_status
+  - utter_explain_priority
 
 session_config:
   session_expiration_time: 0.0

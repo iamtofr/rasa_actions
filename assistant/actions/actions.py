@@ -48,10 +48,12 @@ class ActionSessionStart(Action):
                 user_profile = anonymous_profile
             else:
                 # Make an actual call to Snow API.
-                user_profile = await snow.get_user_profile(id)
-
+                profile = await snow.get_user_profile(id)
+                if profile.get("status") != 200:
+                    slots.append(SlotSet(key="api_status", value="offline"))
+                user_profile = profile.get("data")
             slots.append(SlotSet(key="user_profile", value=user_profile))
-
+            slots.append(SlotSet(key="api_status", value="online"))
         if user_name is None:
             slots.append(SlotSet(key="user_name", value=user_profile.get("name")))
 
